@@ -9,14 +9,19 @@
         var zi = coord.y
         var out = true;
 
-        for (var i = 0; i < 10; i++) {
+        for (var i = 0; i < 50; i++) {
             if (zr**2 + zi**2 > 4) {
                 out = false;
                 return out;
             }
 
-            zr = zr**2 + cr;
-            zi = ((zr * zi) *2) + zi**2 + ci
+            // zr = zr**2 + cr;
+            // zi = ((zr * zi) *2) + zi**2 + ci
+
+            newzr = (zr * zr) - (zi * zi) + cr;
+            newzi = ((zr * zi) *2) + ci
+            zr = newzr
+            zi = newzi
         }
         return out;
     }
