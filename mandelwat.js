@@ -2,8 +2,29 @@
     var c = document.getElementById("mandelwat");
     var ctx = c.getContext("2d");
 
+    function ismandlebrot(coord) {
+        var cr = coord.x
+        var ci = coord.y
+        var zr = coord.x
+        var zi = coord.y
+        var out = true;
+
+        for (var i = 0; i < 10; i++) {
+            if (zr**2 + zi**2 > 4) {
+                out = false;
+                return out;
+            }
+
+            zr = zr**2 + cr;
+            zi = ((zr * zi) *2) + zi**2 + ci
+        }
+        return out;
+    }
+
     function predicate(coord) {
-       return coord.x % 10 == 0;
+        coord.x = (coord.x * 4 / c.width) - 2;
+        coord.y = ((coord.y * 4 / c.height) - 2) * -1;
+        return ismandlebrot(coord);
     }
 
     function indexToXY(index) {
@@ -16,17 +37,18 @@
 
     var imageData = ctx.createImageData(c.width, c.height);
     var acc = [];
-    for (i = 0; i < c.width * c.height * 4; i += 4) {
+    for (var i = 0; i < c.width * c.height * 4; i += 4) {
 
         var set = predicate(
             indexToXY(i)
         ) ? 0 : 255;
 
-        imageData.data[x] =     set;
-        imageData.data[x + 1] = set;
-        imageData.data[x + 2] = set;
-        imageData.data[x + 3] = 255;
+        imageData.data[i] =     set;
+        imageData.data[i + 1] = set;
+        imageData.data[i + 2] = set;
+        imageData.data[i + 3] = 255;
+
     }
-    console.log(acc)
+
     ctx.putImageData(imageData, 0, 0);
-})()
+})();
