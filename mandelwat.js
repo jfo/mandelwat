@@ -1,18 +1,13 @@
 (function() {
-    function randColor() { return '#'+Math.floor(Math.random()*16777215).toString(16); }
-
     var c = document.getElementById("mandelwat");
     var ctx = c.getContext("2d");
-    ctx.beginPath();
-    ctx.rect(0, 0, c.width, c.height);
 
-    function newColor() {
-        ctx.fillStyle = randColor();
-        ctx.fill();
-        console.log(ctx.fillStyle);
-        requestAnimationFrame(newColor);
-    }
+    ctx.moveTo(c.width/2,0);
+    ctx.lineTo(c.width/2,c.height);
+    ctx.stroke();
 
-    newColor();
+    ctx.moveTo(0, c.height / 2);
+    ctx.lineTo(c.width,c.height / 2);
+    ctx.stroke();
 
 })()
