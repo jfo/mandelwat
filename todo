@@ -1,0 +1,5 @@
+1 - make a square canvas
+2 - make a border around the canvas
+3 - make a bullseye in the canvas
+4 - scale the dimensions of the canvas to represent the bound of -2..2 on both axes
+5 - think about what a set is

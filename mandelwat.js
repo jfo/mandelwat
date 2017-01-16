@@ -1,59 +1,70 @@
 (function() {
-    var c = document.getElementById("mandelwat");
-    var ctx = c.getContext("2d");
+    function Graph(canvasId) {
+        var canvas = document.getElementById(canvasId);
+        var ctx = canvas.getContext("2d");
+
+        var indexToXY = function(index) {
+            index /= 4;
+            return {
+                x: index % canvas.width,
+                y: Math.floor(index / canvas.width)
+            }
+        }
+
+        var indexToCoord = function(index) {
+           coord = indexToXY(index);
+           coord.x = ((coord.x * 4 / canvas.height) - 2);
+           coord.y = (((coord.y * 4 / canvas.width) - 2) * -1) ;
+           return coord;
+        }
+
+        this.render = function(predicate) {
+            var imageData = ctx.createImageData(canvas.width, canvas.height);
+            for (var i = 0; i < canvas.width * canvas.height * 4; i += 4) {
+                set = predicate(indexToCoord(i), arguments[1]) ? 0 : 255;
+                imageData.data[i]     = set;
+                imageData.data[i + 1] = set;
+                imageData.data[i + 2] = set;
+                imageData.data[i + 3] = 255;
+            }
+            ctx.putImageData(imageData, 0, 0);
+        }
+    }
 
     function ismandlebrot(coord) {
         var cr = coord.x
         var ci = coord.y
         var zr = coord.x
         var zi = coord.y
-        var out = true;
 
-        for (var i = 0; i < 50; i++) {
+        for (var i = 0; i < arguments[1]; i++) {
             if (zr**2 + zi**2 > 4) {
-                out = false;
-                return out;
+                return false;
             }
-
-            // zr = zr**2 + cr;
-            // zi = ((zr * zi) *2) + zi**2 + ci
 
             newzr = (zr * zr) - (zi * zi) + cr;
             newzi = ((zr * zi) *2) + ci
             zr = newzr
             zi = newzi
         }
-        return out;
+        return true;
     }
 
-    function predicate(coord) {
-        coord.x = (coord.x * 4 / c.width) - 2;
-        coord.y = ((coord.y * 4 / c.height) - 2) * -1;
-        return ismandlebrot(coord);
-    }
+    var graph = new Graph("mandelwat");
 
-    function indexToXY(index) {
-        index /= 4;
-        return {
-            x: index % c.width,
-            y: Math.floor(index / c.width)
+    var i = 0;
+    var up = true;
+    setInterval(function() {
+        graph.render(ismandlebrot, i)
+        up ? i++ : i--;
+
+        if (i == 30) {
+            up = false
+        } else if (i == 0){
+            up = true
         }
-    }
+    }, 500)
 
-    var imageData = ctx.createImageData(c.width, c.height);
-    var acc = [];
-    for (var i = 0; i < c.width * c.height * 4; i += 4) {
-
-        var set = predicate(
-            indexToXY(i)
-        ) ? 0 : 255;
-
-        imageData.data[i] =     set;
-        imageData.data[i + 1] = set;
-        imageData.data[i + 2] = set;
-        imageData.data[i + 3] = 255;
-
-    }
-
-    ctx.putImageData(imageData, 0, 0);
 })();
+
+
