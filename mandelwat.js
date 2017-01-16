@@ -3,19 +3,15 @@
         var canvas = document.getElementById(canvasId);
         var ctx = canvas.getContext("2d");
 
-        var indexToXY = function(index) {
+        var indexToCoord = function(index) {
             index /= 4;
-            return {
+            coord =  {
                 x: index % canvas.width,
                 y: Math.floor(index / canvas.width)
             }
-        }
-
-        var indexToCoord = function(index) {
-           coord = indexToXY(index);
-           coord.x = ((coord.x * 4 / canvas.height) - 2);
-           coord.y = (((coord.y * 4 / canvas.width) - 2) * -1) ;
-           return coord;
+            coord.x = ((coord.x * 4 / canvas.height) - 2);
+            coord.y = ((coord.y * 4 / canvas.width) - 2) * -1 ;
+            return coord;
         }
 
         this.render = function(predicate) {
@@ -37,7 +33,7 @@
         var zr = coord.x
         var zi = coord.y
 
-        for (var i = 0; i < arguments[1]; i++) {
+        for (var i = 0; i < 100; i++) {
             if (zr**2 + zi**2 > 4) {
                 return false;
             }
@@ -51,19 +47,7 @@
     }
 
     var graph = new Graph("mandelwat");
-
-    var i = 0;
-    var up = true;
-    setInterval(function() {
-        graph.render(ismandlebrot, i)
-        up ? i++ : i--;
-
-        if (i == 30) {
-            up = false
-        } else if (i == 0){
-            up = true
-        }
-    }, 500)
+    graph.render(ismandlebrot);
 
 })();
 
