@@ -5,6 +5,7 @@
         var imageData = ctx.createImageData(canvas.width, canvas.height);
         var aspectRatio = canvas.height / canvas.width
 
+        this.iterations = 200;
         this.r = 4
         this.center = {
             x: 0,
@@ -29,9 +30,9 @@
             var zi = coord.y
 
             var i;
-            for (i = 0; i < 200; i++) {
+            for (i = 0; i < this.iterations; i++) {
                 if (zr**2 + zi**2 > 4) {
-                    return false;
+                    return [false, i];
                 }
 
                 newzr = (zr * zr) - (zi * zi) + cr;
@@ -39,26 +40,29 @@
                 zr = newzr
                 zi = newzi
             }
-            return true;
-        }
+            return [true, i];
+        }.bind(this);
 
         this.render = function() {
             for (var i = 0; i < canvas.width * canvas.height * 4; i += 4) {
-                set = ismandlebrot(indexToCoord(i)) ? 0 : 255;
-                imageData.data[i]     = set;
-                imageData.data[i + 1] = set;
-                imageData.data[i + 2] = set;
+                thing = ismandlebrot(indexToCoord(i))
+                set =  thing[0] ?  0: (thing[1] / this.iterations) * 0xffffff;
+                imageData.data[i]     = (set & 0xff0000) >> 16;
+                imageData.data[i + 1] = (set & 0x00ff00) >> 8;
+                imageData.data[i + 2] = set & 0x0000ff;
                 imageData.data[i + 3] = 255;
             }
             ctx.putImageData(imageData, 0, 0);
-        }
+        }.bind(this)
     }
 
     var mb = new Mandelbrot("mandelwat");
-    mb.r = 0.0003;
-    mb.center = {
-        x: -1.25066,
-        y: 0.02012
-    };
+    mb.center = { x:  0.25001, y: 0  };
+    mb.r = 0.00047
+    mb.iterations = 1000;
     mb.render();
+    // setInterval(function() {
+    //     mb.iterations += 10;
+    //     mb.render();
+    // }, 1000)
 })();
