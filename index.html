@@ -13,10 +13,14 @@
 </script>
 
 <script id="2d-fragment-shader" type="x-shader/x-fragment">// <![CDATA[
+
     precision mediump float;
+    uniform vec2 xy;
+
     void main() {
-        gl_FragColor = vec4(gl_FragCoord.x / 500.0, gl_FragCoord.y / 500.0, 0, 1);
+        gl_FragColor = vec4(gl_FragCoord.x / xy.x, gl_FragCoord.y / xy.y, xy.y / xy.x, 1);
     }
+
 </script>
 
 <!-- <script src='./mandelwat.js'></script> -->
