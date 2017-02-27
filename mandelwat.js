@@ -59,13 +59,13 @@
     var mb = new Mandelbrot("mandelwat");
 
     // this would change the coordinates, defaults to 0, 0
-    // mb.center = { x:  -1.25066, y: 0.02012  };
+    mb.center = { x:  -1.25066, y: 0.02012  };
 
     // this changes the zoom level, defaults to 4 across
-    // mb.r = 0.00047
+    mb.r = 0.0047
 
     // iterations defaults to 200. change this to see weirder colors
-    // mb.iterations = 1000;
+    mb.iterations = 5000;
 
     mb.render();
 
