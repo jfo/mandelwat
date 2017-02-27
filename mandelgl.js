@@ -78,11 +78,12 @@ var offset = 0;
 var count = 6;
 
 var offsetLoc = gl.getUniformLocation(program, "xy");
-gl.uniform2fv(offsetLoc, [20,20])
+
+// thoser the width height attrs for the canvas
+gl.uniform2fv(offsetLoc, [ 500,500 ])
 gl.drawArrays(primitiveType, offset, count);
 
 canvas.addEventListener('mousemove', function(e) {
     console.log([e.offsetX, e.offsetY]);
-    gl.uniform2fv(offsetLoc, [e.offsetX, e.offsetY])
     gl.drawArrays(primitiveType, offset, count);
 });

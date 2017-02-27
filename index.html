@@ -18,9 +18,24 @@
     uniform vec2 xy;
 
     void main() {
-        gl_FragColor = vec4(gl_FragCoord.x / xy.x, gl_FragCoord.y / xy.y, xy.y / xy.x, 1);
-    }
+        vec3 col = vec3(0.0);
+        vec2 p = -(xy - 2.0 * gl_FragCoord.xy) / xy.y * 2.0;
 
+        float l = 1.0;
+
+        vec2 z  = vec2(0.0);
+        vec2 c = vec2(p.x, p.y);
+        for( int i=0; i<200; i++ ) {
+            // z = z*z + c
+            z = vec2( z.x*z.x - z.y*z.y, 2.0*z.x*z.y ) + c;
+
+            if( dot(z,z)>(4.0) ) break;
+
+            l += 1.0;
+        }
+        col += 0.5 + 0.5 * cos( 3.0 + l * 0.15 + vec3(1.6,1.0,1.0));
+        gl_FragColor = vec4( col, 1.0 );
+    }
 </script>
 
 <!-- <script src='./mandelwat.js'></script> -->
