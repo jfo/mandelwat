@@ -16,10 +16,15 @@
 
     precision mediump float;
     uniform vec2 xy;
+    uniform vec2 center;
 
     void main() {
         vec3 col = vec3(0.0);
-        vec2 p = -(xy - 2.0 * gl_FragCoord.xy) / xy.y * 2.0;
+
+        vec2 p;
+        float r = 2.0;
+        p.x = -(xy.x - 2.0 * gl_FragCoord.x) / xy.y * r + center.x;
+        p.y = -(xy.y - 2.0 * gl_FragCoord.y) / xy.y * r + center.y;
 
         float l = 1.0;
 

@@ -78,12 +78,19 @@ var offset = 0;
 var count = 6;
 
 var offsetLoc = gl.getUniformLocation(program, "xy");
+var centerLoc = gl.getUniformLocation(program, "center");
 
 // thoser the width height attrs for the canvas
 gl.uniform2fv(offsetLoc, [ 500,500 ])
+gl.uniform2fv(centerLoc, [ 0.0,0.0 ])
 gl.drawArrays(primitiveType, offset, count);
 
-canvas.addEventListener('mousemove', function(e) {
+canvas.addEventListener('onscroll', function(e) {
     console.log([e.offsetX, e.offsetY]);
+});
+
+canvas.addEventListener('click', function(e) {
+    console.log([e.offsetX, e.offsetY]);
+    gl.uniform2fv(centerLoc, [e.offsetX / 500, e.offsetY / 500])
     gl.drawArrays(primitiveType, offset, count);
 });
