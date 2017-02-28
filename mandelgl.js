@@ -81,16 +81,55 @@ var offsetLoc = gl.getUniformLocation(program, "xy");
 var centerLoc = gl.getUniformLocation(program, "center");
 
 // thoser the width height attrs for the canvas
-gl.uniform2fv(offsetLoc, [ 500,500 ])
-gl.uniform2fv(centerLoc, [ 0.0,0.0 ])
-gl.drawArrays(primitiveType, offset, count);
+function logslider(position) {
+  // position will be between 0 and 100
+  var minp = 0;
+  var maxp = 100;
 
-canvas.addEventListener('onscroll', function(e) {
-    console.log([e.offsetX, e.offsetY]);
+  // The result should be between 100 an 10000000
+  var minv = Math.log(0.5);
+  var maxv = Math.log(150000);
+
+  // calculate adjustment factor
+  var scale = (maxv-minv) / (maxp-minp);
+
+  return Math.exp(minv + scale*(position-minp));
+}
+
+var r = gl.getUniformLocation(program, "r");
+gl.uniform1f(r, 2.0)
+var zoom = document.getElementById("zoom")
+zoom.addEventListener('input', function(e) {
+    console.log(r);
+    gl.uniform1f(r , 1 / logslider(e.target.value))
+    requestAnimationFrame(function(){
+        gl.drawArrays(primitiveType, offset, count);
+    });
 });
 
+
+var iterations = gl.getUniformLocation(program, "iterations");
+gl.uniform1f(iterations, 2000)
+var iterationslide = document.getElementById("iterations")
+iterationslide.addEventListener('input', function(e) {
+    gl.uniform1f(iterations, e.target.value)
+    gl.drawArrays(primitiveType, offset, count);
+});
+
+var wat = gl.getUniformLocation(program, "wat");
+gl.uniform1f(wat, 6.0)
+var watslide = document.getElementById("wat")
+watslide.addEventListener('input', function(e) {
+    gl.uniform1f(wat, e.target.value)
+    gl.drawArrays(primitiveType, offset, count);
+});
+
+gl.uniform2fv(offsetLoc, [ 500,500 ])
+gl.uniform2fv(centerLoc, [ 159.0/500.0, 207.0/500.0 ])
 canvas.addEventListener('click', function(e) {
     console.log([e.offsetX, e.offsetY]);
     gl.uniform2fv(centerLoc, [e.offsetX / 500, e.offsetY / 500])
     gl.drawArrays(primitiveType, offset, count);
 });
+
+gl.drawArrays(primitiveType, offset, count);

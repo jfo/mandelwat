@@ -2,8 +2,12 @@
     width=500
     height=500
     id='mandelwat'
-    style="border: 1px solid red;"
+    style="border: 1px solid red;">
 </canvas>
+<input id="zoom" type="range" value="0.5" min="0.5" max="100">
+<input id="iterations" type="range" value="100" min="1.0" max="2000">
+<input id="wat" type="range" value="4" min="1" max="10">
+
 
 <script id="2d-vertex-shader" type="notjs">
     attribute vec2 a_position;
@@ -17,12 +21,14 @@
     precision mediump float;
     uniform vec2 xy;
     uniform vec2 center;
+    uniform float r;
+    uniform float wat;
+    uniform float iterations;
 
     void main() {
         vec3 col = vec3(0.0);
 
         vec2 p;
-        float r = 2.0;
         p.x = -(xy.x - 2.0 * gl_FragCoord.x) / xy.y * r + center.x;
         p.y = -(xy.y - 2.0 * gl_FragCoord.y) / xy.y * r + center.y;
 
@@ -30,15 +36,22 @@
 
         vec2 z  = vec2(0.0);
         vec2 c = vec2(p.x, p.y);
-        for( int i=0; i<200; i++ ) {
+        for( float i = 0.0; i < 100000.0; i++ ) {
             // z = z*z + c
             z = vec2( z.x*z.x - z.y*z.y, 2.0*z.x*z.y ) + c;
 
-            if( dot(z,z)>(4.0) ) break;
+            if( dot(z,z)>(4.0) ) {
+                // col += 0.5 + 0.5 * cos( 1.0 + l * wat + vec3(0.5,1.0,0.1));
+                col += -((l / iterations) - 1.0);
+                break;
+            }
+            if( i > iterations ) {
+                break;
+            }
 
             l += 1.0;
         }
-        col += 0.5 + 0.5 * cos( 3.0 + l * 0.15 + vec3(1.6,1.0,1.0));
+
         gl_FragColor = vec4( col, 1.0 );
     }
 </script>
