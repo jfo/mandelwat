@@ -4,9 +4,8 @@
     id='mandelwat'
     style="border: 1px solid red;">
 </canvas>
-<input id="zoom" type="range" value="0.5" min="0.5" max="100">
-<input id="iterations" type="range" value="100" min="1.0" max="2000">
-<input id="wat" type="range" value="4" min="1" max="10">
+<input id="zoom" type="range" value="0.3" min="0.5" max="100">
+<input id="iterations" type="range" value="100" min="1.0" max="5000">
 
 
 <script id="2d-vertex-shader" type="notjs">
@@ -28,9 +27,7 @@
     void main() {
         vec3 col = vec3(0.0);
 
-        vec2 p;
-        p.x = -(xy.x - 2.0 * gl_FragCoord.x) / xy.y * r + center.x;
-        p.y = -(xy.y - 2.0 * gl_FragCoord.y) / xy.y * r + center.y;
+        vec2 p = -(xy - 2.0 * gl_FragCoord.xy) / xy.y * r + center;
 
         float l = 1.0;
 
