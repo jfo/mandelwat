@@ -38,8 +38,9 @@
             z = vec2( z.x*z.x - z.y*z.y, 2.0*z.x*z.y ) + c;
 
             if( dot(z,z)>(4.0) ) {
-                // col += 0.5 + 0.5 * cos( 1.0 + l * wat + vec3(0.5,1.0,0.1));
-                col += -((l / iterations) - 1.0);
+                col += 0.5 + 0.5*cos( 3.0 + l*0.15 + vec3(0.0,0.6,1.0));
+
+                // col += -((l / iterations) - 1.0);
                 break;
             }
             if( i > iterations ) {
