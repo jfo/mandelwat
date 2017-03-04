@@ -98,14 +98,8 @@
       return Math.exp(minv + scale*(position-minp));
     }
 
-    canvas.addEventListener('wheel', function(e) {
-        if (rext > 0 && rext < 100) {
-            rext -= e.deltaY;
-            console.log(rext);
-            gl.uniform1f(r, logslider(rext))
-            gl.drawArrays(primitiveType, offset, count);
-        }
-    });
+
+    var zoomlevel = 0.5;
 
     var r = gl.getUniformLocation(program, "r");
     var rext = 2.0;
@@ -117,6 +111,19 @@
         requestAnimationFrame(function(){
             gl.drawArrays(primitiveType, offset, count);
         });
+    });
+
+    canvas.addEventListener('wheel', function(e) {
+        console.log(zoomlevel)
+        if (zoomlevel < 100 && zoomlevel > 0.0) {
+            var delta = (e.deltaY < 0 ? -0.3 : 0.3)
+            rext = 1/logslider(zoomlevel += delta);
+            gl.uniform1f(r , rext)
+            requestAnimationFrame(function(){
+                gl.drawArrays(primitiveType, offset, count);
+            });
+        } else {
+        }
     });
 
 
