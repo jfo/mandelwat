@@ -131,20 +131,15 @@
         }
     });
 
-    var queryDict = {}
-    location.search.substr(1).split("&").forEach(function(item) {queryDict[item.split("=")[0]] = item.split("=")[1]})
-
-
     var iterations = gl.getUniformLocation(program, "iterations");
-    var iterationslide = document.getElementById("iterations")
-    var initIterState = (queryDict["iter"] ? parseFloat(queryDict["iter"]) : 50.0);
-    gl.uniform1f(iterations, initIterState)
+    var iterationslide = document.getElementById("iterations");
+    var initIterState = 50;
     iterationslide.value = initIterState;
+    gl.uniform1i(iterations, initIterState);
     iterationslide.addEventListener('input', function(e) {
-        gl.uniform1f(iterations, e.target.value)
+        gl.uniform1i(iterations, e.target.value);
         gl.drawArrays(primitiveType, offset, count);
     });
-    console.log(queryDict);
 
     gl.uniform2fv(offsetLoc, [ 500,500 ])
     var center = { x:0.0, y:0.0 };
@@ -160,7 +155,7 @@
     function attachSliderEventHandlers(id) {
         var thing = gl.getUniformLocation(program, id);
         var thingslide = document.getElementById(id)
-        var initState = queryDict[id] ? parseFloat(queryDict[id]) : 0.0
+        var initState = 0.0;
         thingslide.value = initState;
         gl.uniform1f(thing, initState)
         thingslide.addEventListener('input', function(e) {
