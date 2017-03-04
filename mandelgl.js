@@ -122,7 +122,10 @@
             requestAnimationFrame(function(){
                 gl.drawArrays(primitiveType, offset, count);
             });
-        } else {
+        } else if (zoomlevel > 100) {
+            zoomlevel = 99.9;
+        } else if (zoomlevel < 0) {
+            zoomlevel = 0.1;
         }
     });
 
