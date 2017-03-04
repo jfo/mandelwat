@@ -1,83 +1,83 @@
-<canvas width=500 height=500 id='mandelwat'></canvas>
+<div id=content style="max-width: 500; margin: 0 auto;">
+    <canvas width=500 height=500 id='mandelwat'></canvas>
 
-<div>
-    <span>zoom</span>
-    <input id="zoom" type="range" value="0.3" min="0.5" max="100">
-</div>
+    <table>
+        <tr>
+            <td>zoom</td>
+            <td><input id="zoom" type="range" value="0.3" min="0.5" max="100"></td>
+        </tr>
+        <tr>
+            <td>iterations</td>
+            <td><input id="iterations" type="range" min="1.0" max="500"></td>
+        </tr>
+        <tr>
+            <td>wat</td>
+            <td><input id="wat" type="range" value="0.0" min="0.0" max="360.0"></td>
+        </tr>
+        <tr>
+            <td>cyan</td>
+            <td><input id="red" type="range" value="0.0" min="0.0" max="620"></td>
+        </tr>
+        <tr>
+            <td>magenta</td>
+            <td><input id="green" type="range" value="0.0" min="0.0" max="620"></td>
+        </tr>
+        <tr>
+            <td>yellow</td>
+            <td><input id="blue" type="range" value="0.0" min="0.0" max="620"></td>
+        </tr>
+    </table>
 
-<div>
-    <span>iterations</span>
-    <input id="iterations" type="range" value="200" min="1.0" max="500">
-</div>
-<div>
-    <span>wat</span>
-    <input id="wat" type="range" value="0.0" min="0.0" max="360.0">
-</div>
 
-<div>
-    <span>cyan</span>
-    <input id="red" type="range" value="0.0" min="0.0" max="620">
-</div>
-<div>
-    <span>magenta</span>
-    <input id="green" type="range" value="0.0" min="0.0" max="620">
-</div>
-<div>
-    <span>yellow</span>
-    <input id="blue" type="range" value="0.0" min="0.0" max="620">
-</div>
-
-
-<script id="2d-vertex-shader" type="notjs">
-    attribute vec2 a_position;
-    void main() {
-        gl_Position = vec4(a_position, 0, 1);
-    }
-</script>
-
-<script id="2d-fragment-shader" type="x-shader/x-fragment">// <![CDATA[
-
-    precision mediump float;
-    uniform vec2 xy;
-    uniform vec2 center;
-    uniform float r;
-
-    uniform float wat;
-    uniform float iterations;
-
-    uniform float red;
-    uniform float green;
-    uniform float blue;
-
-    void main() {
-        vec3 col = vec3(0.0);
-
-        vec2 p = -(xy - 2.0 * gl_FragCoord.xy) / xy.y * r + center;
-
-        float l = 1.0;
-
-        vec2 z  = vec2(0.0);
-        vec2 c = vec2(p.x, p.y);
-        for( float i = 0.0; i < 100000.0; i++ ) {
-            // z = z*z + c
-            z = vec2( z.x*z.x - z.y*z.y, 2.0*z.x*z.y ) + c;
-
-            if( dot(z,z)>(4.0) ) {
-                col += 0.5 + 0.5*cos(l * wat + vec3(red, green , blue));
-
-                // col += -((l / iterations) - 1.0);
-                break;
-            }
-            if( i > iterations ) {
-                break;
-            }
-
-            l += 1.0;
+    <script id="2d-vertex-shader" type="notjs">
+        attribute vec2 a_position;
+        void main() {
+            gl_Position = vec4(a_position, 0, 1);
         }
+    </script>
 
-        gl_FragColor = vec4( col, 1.0 );
-    }
-</script>
+    <script id="2d-fragment-shader" type="x-shader/x-fragment">// <![CDATA[
 
-<!-- <script src='./mandelwat.js'></script> -->
-<script src='./mandelgl.js'></script>
+        precision mediump float;
+        uniform vec2 xy;
+        uniform vec2 center;
+        uniform float r;
+
+        uniform float wat;
+        uniform float iterations;
+
+        uniform float red;
+        uniform float green;
+        uniform float blue;
+
+        void main() {
+            vec3 col = vec3(0.0);
+
+            vec2 p = -(xy - 2.0 * gl_FragCoord.xy) / xy.y * r + center;
+
+            float l = 1.0;
+
+            vec2 z  = vec2(0.0);
+            vec2 c = vec2(p.x, p.y);
+            for( float i = 0.0; i < 100000.0; i++ ) {
+                // z = z*z + c
+                z = vec2( z.x*z.x - z.y*z.y, 2.0*z.x*z.y ) + c;
+
+                if( dot(z,z)>(4.0) ) {
+                    col += 0.5 + 0.5*cos(l * wat + vec3(red, green , blue));
+
+                    // col += -((l / iterations) - 1.0);
+                    break;
+                }
+                if( i > iterations ) {
+                    break;
+                }
+
+                l += 1.0;
+            }
+
+            gl_FragColor = vec4( col, 1.0 );
+        }
+    </script>
+    <script src='./mandelgl.js'></script>
+</div>

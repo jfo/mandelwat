@@ -2,6 +2,7 @@
     var canvas = document.getElementById("mandelwat");
     var gl = canvas.getContext("webgl");
 
+
     function createShader(gl, type, source) {
       var shader = gl.createShader(type);
       gl.shaderSource(shader, source);
@@ -51,8 +52,6 @@
     ];
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
 
-    // webglUtils.resizeCanvasToDisplaySize(gl.canvas);
-
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
     // Clear the canvas
     gl.clearColor(0, 0, 0, 0);
@@ -65,12 +64,11 @@
     // Bind the position buffer.
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
 
-    // Tell the attribute how to get data out of positionBuffer (ARRAY_BUFFER)
-    var size = 2;          // 2 components per iteration
-    var type = gl.FLOAT;   // the data is 32bit floats
-    var normalize = false; // don't normalize the data
-    var stride = 0;        // 0 = move forward size * sizeof(type) each iteration to get the next position
-    var offset = 0;        // start at the beginning of the buffer
+    var size = 2;
+    var type = gl.FLOAT;
+    var normalize = false;
+    var stride = 0;
+    var offset = 0;
     gl.vertexAttribPointer(
         positionAttributeLocation, size, type, normalize, stride, offset)
 
@@ -78,16 +76,22 @@
     var offset = 0;
     var count = 6;
 
+
+    // mine starts here:
+    // mine starts here:
+    // mine starts here:
+    // mine starts here:
+    // mine starts here:
+
     var offsetLoc = gl.getUniformLocation(program, "xy");
     var centerLoc = gl.getUniformLocation(program, "center");
 
-    // thoser the width height attrs for the canvas
     function logslider(position) {
       // position will be between 0 and 100
       var minp = 0;
       var maxp = 100;
 
-      // The result should be between 100 an 10000000
+      // The result should be between 100 and 10000000
       var minv = Math.log(0.5);
       var maxv = Math.log(150000);
 
@@ -96,7 +100,6 @@
 
       return Math.exp(minv + scale*(position-minp));
     }
-
 
     var zoomlevel = 0.5;
 
@@ -113,7 +116,6 @@
     });
 
     canvas.addEventListener('wheel', function(e) {
-        console.log(logslider(zoomlevel));
         if (zoomlevel < 100 && zoomlevel > 0.0) {
             var delta = (e.deltaY < 0 ? -0.3 : 0.3)
             rext = 1/logslider(zoomlevel += delta);
@@ -121,6 +123,7 @@
             requestAnimationFrame(function(){
                 gl.drawArrays(primitiveType, offset, count);
             });
+            zoom.value=zoomlevel;
         } else if (zoomlevel > 100) {
             zoomlevel = 99.9;
         } else if (zoomlevel < 0) {
@@ -128,15 +131,20 @@
         }
     });
 
+    var queryDict = {}
+    location.search.substr(1).split("&").forEach(function(item) {queryDict[item.split("=")[0]] = item.split("=")[1]})
+
 
     var iterations = gl.getUniformLocation(program, "iterations");
-    gl.uniform1f(iterations, 100)
     var iterationslide = document.getElementById("iterations")
+    var initIterState = (queryDict["iter"] ? parseFloat(queryDict["iter"]) : 50.0);
+    gl.uniform1f(iterations, initIterState)
+    iterationslide.value = initIterState;
     iterationslide.addEventListener('input', function(e) {
-        console.log(e.target.value)
         gl.uniform1f(iterations, e.target.value)
         gl.drawArrays(primitiveType, offset, count);
     });
+    console.log(queryDict);
 
     gl.uniform2fv(offsetLoc, [ 500,500 ])
     var center = { x:0.0, y:0.0 };
@@ -144,45 +152,27 @@
     canvas.addEventListener('click', function(e) {
         center.x += ((e.offsetX * rext / canvas.width) - rext / 2) * 2
         center.y += (((e.offsetY * rext / canvas.height) - rext / 2) * -1) * 2
-
-
         gl.uniform2fv(centerLoc, [center.x, center.y])
         gl.drawArrays(primitiveType, offset, count);
     });
 
+
+    function attachSliderEventHandlers(id) {
+        var thing = gl.getUniformLocation(program, id);
+        var thingslide = document.getElementById(id)
+        var initState = queryDict[id] ? parseFloat(queryDict[id]) : 0.0
+        thingslide.value = initState;
+        gl.uniform1f(thing, initState)
+        thingslide.addEventListener('input', function(e) {
+            gl.uniform1f(thing, e.target.value / 100)
+            gl.drawArrays(primitiveType, offset, count);
+        });
+    }
+    attachSliderEventHandlers("red");
+    attachSliderEventHandlers("green");
+    attachSliderEventHandlers("blue");
+    attachSliderEventHandlers("wat");
+
+    // actually draw the initial state.
     gl.drawArrays(primitiveType, offset, count);
-
-    var red = gl.getUniformLocation(program, "red");
-    gl.uniform1f(red, 0.0)
-    var redslide = document.getElementById("red")
-    redslide.addEventListener('input', function(e) {
-        console.log(e.target.value);
-        gl.uniform1f(red, e.target.value / 100)
-        gl.drawArrays(primitiveType, offset, count);
-    });
-
-    var green = gl.getUniformLocation(program, "green");
-    gl.uniform1f(green, 0.0)
-    var greenslide = document.getElementById("green")
-    greenslide.addEventListener('input', function(e) {
-        gl.uniform1f(green, e.target.value / 100)
-        gl.drawArrays(primitiveType, offset, count);
-    });
-
-    var blue = gl.getUniformLocation(program, "blue");
-    gl.uniform1f(blue, 0.0)
-    var blueslide = document.getElementById("blue")
-    blueslide.addEventListener('input', function(e) {
-        gl.uniform1f(blue, e.target.value / 100)
-        gl.drawArrays(primitiveType, offset, count);
-    });
-
-    var wat = gl.getUniformLocation(program, "wat");
-    gl.uniform1f(wat, 0.0)
-    var watslide = document.getElementById("wat")
-    watslide.addEventListener('input', function(e) {
-        gl.uniform1f(wat, e.target.value / 100)
-        gl.drawArrays(primitiveType, offset, count);
-    });
-
 })()
