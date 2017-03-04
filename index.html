@@ -4,10 +4,33 @@
     id='mandelwat'
     style="border: 1px solid red;">
 </canvas>
-<span>zoom</span>
-<input id="zoom" type="range" value="0.3" min="0.5" max="100">
-<span>iterations</span>
-<input id="iterations" type="range" value="100" min="1.0" max="5000">
+
+<div>
+    <span>zoom</span>
+    <input id="zoom" type="range" value="0.3" min="0.5" max="100">
+</div>
+
+<div>
+    <span>iterations</span>
+    <input id="iterations" type="range" value="200" min="1.0" max="500">
+</div>
+<div>
+    <span>wat</span>
+    <input id="wat" type="range" value="0.0" min="0.0" max="360.0">
+</div>
+
+<div>
+    <span>cyan</span>
+    <input id="red" type="range" value="0.0" min="0.0" max="620">
+</div>
+<div>
+    <span>magenta</span>
+    <input id="green" type="range" value="0.0" min="0.0" max="620">
+</div>
+<div>
+    <span>yellow</span>
+    <input id="blue" type="range" value="0.0" min="0.0" max="620">
+</div>
 
 
 <script id="2d-vertex-shader" type="notjs">
@@ -23,8 +46,13 @@
     uniform vec2 xy;
     uniform vec2 center;
     uniform float r;
+
     uniform float wat;
     uniform float iterations;
+
+    uniform float red;
+    uniform float green;
+    uniform float blue;
 
     void main() {
         vec3 col = vec3(0.0);
@@ -40,7 +68,7 @@
             z = vec2( z.x*z.x - z.y*z.y, 2.0*z.x*z.y ) + c;
 
             if( dot(z,z)>(4.0) ) {
-                col += 0.5 + 0.5*cos( 3.0 + l*0.15 + vec3(0.0,0.6,1.0));
+                col += 0.5 + 0.5*cos(l * wat + vec3(red, green , blue));
 
                 // col += -((l / iterations) - 1.0);
                 break;

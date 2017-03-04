@@ -1,5 +1,4 @@
 (function() {
-
     var canvas = document.getElementById("mandelwat");
     var gl = canvas.getContext("webgl");
 
@@ -90,7 +89,7 @@
 
       // The result should be between 100 an 10000000
       var minv = Math.log(0.5);
-      var maxv = Math.log(1500000);
+      var maxv = Math.log(150000);
 
       // calculate adjustment factor
       var scale = (maxv-minv) / (maxp-minp);
@@ -114,7 +113,7 @@
     });
 
     canvas.addEventListener('wheel', function(e) {
-        console.log(zoomlevel)
+        console.log(logslider(zoomlevel));
         if (zoomlevel < 100 && zoomlevel > 0.0) {
             var delta = (e.deltaY < 0 ? -0.3 : 0.3)
             rext = 1/logslider(zoomlevel += delta);
@@ -131,9 +130,10 @@
 
 
     var iterations = gl.getUniformLocation(program, "iterations");
-    gl.uniform1f(iterations, 2000)
+    gl.uniform1f(iterations, 100)
     var iterationslide = document.getElementById("iterations")
     iterationslide.addEventListener('input', function(e) {
+        console.log(e.target.value)
         gl.uniform1f(iterations, e.target.value)
         gl.drawArrays(primitiveType, offset, count);
     });
@@ -151,5 +151,38 @@
     });
 
     gl.drawArrays(primitiveType, offset, count);
+
+    var red = gl.getUniformLocation(program, "red");
+    gl.uniform1f(red, 0.0)
+    var redslide = document.getElementById("red")
+    redslide.addEventListener('input', function(e) {
+        console.log(e.target.value);
+        gl.uniform1f(red, e.target.value / 100)
+        gl.drawArrays(primitiveType, offset, count);
+    });
+
+    var green = gl.getUniformLocation(program, "green");
+    gl.uniform1f(green, 0.0)
+    var greenslide = document.getElementById("green")
+    greenslide.addEventListener('input', function(e) {
+        gl.uniform1f(green, e.target.value / 100)
+        gl.drawArrays(primitiveType, offset, count);
+    });
+
+    var blue = gl.getUniformLocation(program, "blue");
+    gl.uniform1f(blue, 0.0)
+    var blueslide = document.getElementById("blue")
+    blueslide.addEventListener('input', function(e) {
+        gl.uniform1f(blue, e.target.value / 100)
+        gl.drawArrays(primitiveType, offset, count);
+    });
+
+    var wat = gl.getUniformLocation(program, "wat");
+    gl.uniform1f(wat, 0.0)
+    var watslide = document.getElementById("wat")
+    watslide.addEventListener('input', function(e) {
+        gl.uniform1f(wat, e.target.value / 100)
+        gl.drawArrays(primitiveType, offset, count);
+    });
 
 })()
