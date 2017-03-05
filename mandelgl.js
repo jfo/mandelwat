@@ -2,7 +2,6 @@
     var canvas = document.getElementById("mandelwat");
     var gl = canvas.getContext("webgl");
 
-
     function createShader(gl, type, source) {
       var shader = gl.createShader(type);
       gl.shaderSource(shader, source);
@@ -48,7 +47,7 @@
       1, -1,
       1, -1,
       -1, -1,
-      -1, 1,
+      -1, 1
     ];
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
 
