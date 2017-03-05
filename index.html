@@ -1,87 +1,105 @@
-<div id=content style="margin: 0 auto;">
-    <canvas width=500 height=500 id='mandelwat'></canvas>
+<!DOCTYPE html>
 
-    <style>
-        table { table-layout: fixed; }
-        td { width: 25%; }
-        input { width: 100%; }
-    </style>
-    <table style="text-align:center;" width=500>
-        <tr>
-            <td>zoom</td>
-            <td><input id="zoom" type="range" value="0.3" min="0.5" max="100"></td>
-            <td>iterations</td>
-            <td><input id="iterations" type="range" min="1.0" max="500"></td>
-        </tr>
-        <tr>
-            <td>wat</td>
-            <td><input id="wat" type="range" value="0.0" min="0.0" max="360.0"></td>
-            <td>red/cyan</td>
-            <td><input id="red" type="range" value="0.0" min="0.0" max="620"></td>
-        </tr>
-        <tr>
-            <td>blue/magenta</td>
-            <td><input id="green" type="range" value="0.0" min="0.0" max="620"></td>
-            <td>green/yellow</td>
-            <td><input id="blue" type="range" value="0.0" min="0.0" max="620"></td>
-        </tr>
-        <tr>
-            <td>resize x</td>
-            <td><input id="resize-x" value=500></input></td>
-            <td>resize y</td>
-            <td><input id="resize-y" value=500></input></td>
-        </tr>
-        <tr>
-            <td>bailout</td>
-            <td><input id="bailout" type="range" min="4.0" max="10000"></td>
-            <td><button id="resize-button">resize</button></td>
-        </tr>
-    </table>
+<html>
+    <head>
+        <title>Mandelbrot</title>
+    </head>
+
+    <body>
+        <canvas width=500 height=500 id='mandelwat'></canvas>
+
+        <style>
+            table { table-layout: fixed; }
+            td { width: 25%; }
+            input { width: 100%; }
+        </style>
+        <table style="text-align:center;" width=500>
+            <tr>
+                <td>zoom</td>
+                <td><input id="zoom" type="range" value="0.3" min="0.5" max="100"></td>
+                <td>iterations</td>
+                <td><input id="iterations" type="range" min="1.0" max="500"></td>
+            </tr>
+            <tr>
+                <td>wat</td>
+                <td><input id="wat" type="range" value="0.0" min="0.0" max="360.0"></td>
+                <td>red/cyan</td>
+                <td><input id="red" type="range" value="0.0" min="0.0" max="620"></td>
+            </tr>
+            <tr>
+                <td>blue/magenta</td>
+                <td><input id="green" type="range" value="0.0" min="0.0" max="620"></td>
+                <td>green/yellow</td>
+                <td><input id="blue" type="range" value="0.0" min="0.0" max="620"></td>
+            </tr>
+            <tr>
+                <td>resize x</td>
+                <td><input id="resize-x" value=500></input></td>
+                <td>resize y</td>
+                <td><input id="resize-y" value=500></input></td>
+            </tr>
+            <tr>
+                <td>bailout</td>
+                <td><input id="bailout" type="range" min="4.0" max="100"></td>
+                <td><button id="resize-button">resize</button></td>
+            </tr>
+        </table>
 
 
-    <script id="vertex-shader" type="notjs">
-        attribute vec2 a_position;
-        void main() {
-            gl_Position = vec4(a_position, 0, 1);
-        }
-    </script>
-
-    <script id="fragment-shader" type="x-shader/x-fragment">// <![CDATA[
-
-        precision mediump float;
-        uniform vec2 xy;
-        uniform vec2 center;
-        uniform float r;
-
-        uniform float wat;
-        uniform int iterations;
-        uniform float bailout;
-
-        uniform float red;
-        uniform float green;
-        uniform float blue;
-
-        void main() {
-            vec3 col = vec3(0.0);
-
-            vec2 p = -(xy - 2.0 * gl_FragCoord.xy) / xy.y * r + center;
-
-            float l = 1.0;
-
-            vec2 z  = vec2(0.0);
-            vec2 c = vec2(p.x, p.y);
-            for(int i = 0; i < 100000; i++ ) {
-                z = vec2( z.x*z.x - z.y*z.y, 2.0*z.x*z.y ) + c;
-                if( dot(z,z)>(bailout) ) {
-                    col += 0.5 + 0.5*cos(l * wat + vec3(red, green , blue));
-                    break;
-                }
-                if( i > iterations ) { break; }
-                l += 1.0;
+        <script id="vertex-shader" type="notjs">
+            attribute vec2 a_position;
+            void main() {
+                gl_Position = vec4(a_position, 0, 1);
             }
+        </script>
 
-            gl_FragColor = vec4( col, 1.0 );
-        }
-    </script>
-    <script src='./mandelgl.js'></script>
-</div>
+        <script id="fragment-shader" type="x-shader/x-fragment">// <![CDATA[
+
+            precision mediump float;
+            uniform vec2 xy;
+            uniform vec2 center;
+            uniform float r;
+
+            uniform float wat;
+            uniform int iterations;
+            uniform float bailout;
+
+            uniform float red;
+            uniform float green;
+            uniform float blue;
+
+            void main() {
+                vec3 col = vec3(0.0);
+
+                vec2 p = -(xy - 2.0 * gl_FragCoord.xy) / xy.y * r + center;
+
+                float l = 1.0;
+
+                vec2 z  = vec2(0.0);
+                vec2 c = vec2(p.x, p.y);
+                for(int i = 0; i < 100000; i++ ) {
+                    z = vec2( z.x*z.x - z.y*z.y, 2.0*z.x*z.y ) + c;
+                    if( dot(z,z)>(bailout) ) {
+                        col += 0.5 + 0.5*cos(l * wat + vec3(red, green , blue));
+                        break;
+                    }
+                    if( i > iterations ) { break; }
+                    l += 1.0;
+                }
+
+                gl_FragColor = vec4( col, 1.0 );
+            }
+        </script>
+         <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-77907408-2', 'auto');
+          ga('send', 'pageview');
+
+        </script>
+        <script src='./mandelgl.js'></script>
+    </body>
+</html>
