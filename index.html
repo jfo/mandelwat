@@ -1,45 +1,52 @@
-<div id=content style="max-width: 500; margin: 0 auto;">
+<div id=content style="margin: 0 auto;">
     <canvas width=500 height=500 id='mandelwat'></canvas>
 
     <style>
         table { table-layout: fixed; }
-        td { width: 50%; }
+        td { width: 25%; }
+        input { width: 100%; }
     </style>
     <table style="text-align:center;" width=500>
         <tr>
             <td>zoom</td>
             <td><input id="zoom" type="range" value="0.3" min="0.5" max="100"></td>
-        </tr>
-        <tr>
             <td>iterations</td>
             <td><input id="iterations" type="range" min="1.0" max="500"></td>
         </tr>
         <tr>
             <td>wat</td>
             <td><input id="wat" type="range" value="0.0" min="0.0" max="360.0"></td>
-        </tr>
-        <tr>
             <td>red/cyan</td>
             <td><input id="red" type="range" value="0.0" min="0.0" max="620"></td>
         </tr>
         <tr>
             <td>blue/magenta</td>
             <td><input id="green" type="range" value="0.0" min="0.0" max="620"></td>
-        </tr>
-        <tr>
             <td>green/yellow</td>
             <td><input id="blue" type="range" value="0.0" min="0.0" max="620"></td>
         </tr>
+        <tr>
+            <td>resize x</td>
+            <td><input id="resize-x" value=500></input></td>
+            <td>resize y</td>
+            <td><input id="resize-y" value=500></input></td>
+        </tr>
+        <tr>
+            <td>bailout</td>
+            <td><input id="bailout" type="range" min="4.0" max="10000"></td>
+            <td><button id="resize-button">resize</button></td>
+        </tr>
     </table>
 
-    <script id="2d-vertex-shader" type="notjs">
+
+    <script id="vertex-shader" type="notjs">
         attribute vec2 a_position;
         void main() {
             gl_Position = vec4(a_position, 0, 1);
         }
     </script>
 
-    <script id="2d-fragment-shader" type="x-shader/x-fragment">// <![CDATA[
+    <script id="fragment-shader" type="x-shader/x-fragment">// <![CDATA[
 
         precision mediump float;
         uniform vec2 xy;
@@ -48,6 +55,7 @@
 
         uniform float wat;
         uniform int iterations;
+        uniform float bailout;
 
         uniform float red;
         uniform float green;
@@ -64,7 +72,7 @@
             vec2 c = vec2(p.x, p.y);
             for(int i = 0; i < 100000; i++ ) {
                 z = vec2( z.x*z.x - z.y*z.y, 2.0*z.x*z.y ) + c;
-                if( dot(z,z)>(4.0) ) {
+                if( dot(z,z)>(bailout) ) {
                     col += 0.5 + 0.5*cos(l * wat + vec3(red, green , blue));
                     break;
                 }

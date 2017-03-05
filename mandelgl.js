@@ -1,6 +1,10 @@
 (function() {
     var canvas = document.getElementById("mandelwat");
     var gl = canvas.getContext("webgl");
+    if (!gl) {
+        alert("This browser doesn't seem to support webGL. sorry :(");
+        return;
+    }
 
     function createShader(gl, type, source) {
       var shader = gl.createShader(type);
@@ -15,8 +19,8 @@
       gl.deleteShader(shader);
     }
 
-    var vertexShaderSource = document.getElementById("2d-vertex-shader").text;
-    var fragmentShaderSource = document.getElementById("2d-fragment-shader").text;
+    var vertexShaderSource = document.getElementById("vertex-shader").text;
+    var fragmentShaderSource = document.getElementById("fragment-shader").text;
     var vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
     var fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
 
@@ -75,28 +79,17 @@
     var offset = 0;
     var count = 6;
 
-
-    // mine starts here:
-    // mine starts here:
-    // mine starts here:
-    // mine starts here:
     // mine starts here:
 
     var offsetLoc = gl.getUniformLocation(program, "xy");
     var centerLoc = gl.getUniformLocation(program, "center");
 
     function logslider(position) {
-      // position will be between 0 and 100
       var minp = 0;
       var maxp = 100;
-
-      // The result should be between 100 and 10000000
       var minv = Math.log(0.5);
       var maxv = Math.log(150000);
-
-      // calculate adjustment factor
       var scale = (maxv-minv) / (maxp-minp);
-
       return Math.exp(minv + scale*(position-minp));
     }
 
@@ -140,7 +133,30 @@
         gl.drawArrays(primitiveType, offset, count);
     });
 
-    gl.uniform2fv(offsetLoc, [ 500,500 ])
+    var bailout = gl.getUniformLocation(program, "bailout");
+    var bailoutslide = document.getElementById("bailout");
+    var initBailoutState = 4.0;
+    var bailext = initBailoutState;
+    bailoutslide.value = initBailoutState;
+    gl.uniform1f(bailout, initBailoutState);
+    bailoutslide.addEventListener('input', function(e) {
+        bailext = e.target.value ** 2;
+        gl.uniform1f(bailout, bailext);
+        gl.drawArrays(primitiveType, offset, count);
+    });
+
+    var resizebutton = document.getElementById("resize-button");
+    var resizex = document.getElementById("resize-x");
+    var resizey = document.getElementById("resize-y");
+    resizebutton.addEventListener('click', function() {
+        canvas.height = resizey.value;
+        canvas.width = resizex.value;
+        gl.uniform2fv(offsetLoc, [canvas.width,canvas.height])
+        gl.viewport(0, 0, canvas.width, canvas.height);
+        gl.drawArrays(primitiveType, offset, count);
+    });
+
+    gl.uniform2fv(offsetLoc, [canvas.width,canvas.height])
     var center = { x:0.0, y:0.0 };
     gl.uniform2fv(centerLoc, [center.x, center.y])
     canvas.addEventListener('click', function(e) {
@@ -149,7 +165,6 @@
         gl.uniform2fv(centerLoc, [center.x, center.y])
         gl.drawArrays(primitiveType, offset, count);
     });
-
 
     function attachSliderEventHandlers(id) {
         var thing = gl.getUniformLocation(program, id);
@@ -169,4 +184,5 @@
 
     // actually draw the initial state.
     gl.drawArrays(primitiveType, offset, count);
+
 })()
