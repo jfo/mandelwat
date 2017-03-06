@@ -140,7 +140,7 @@
     bailoutslide.value = initBailoutState;
     gl.uniform1f(bailout, initBailoutState);
     bailoutslide.addEventListener('input', function(e) {
-        bailext = e.target.value ** 2;
+        bailext = Math.pow(e.target.value, 2);
         gl.uniform1f(bailout, bailext);
         gl.drawArrays(primitiveType, offset, count);
     });
