@@ -32,23 +32,17 @@
     console.log(gl.getProgramInfoLog(program));
     gl.deleteProgram(program);
   }
-
   var positionAttributeLocation = gl.getAttribLocation(program, 'a_position');
   var positionBuffer = gl.createBuffer();
-
   gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-
-  // three 2d points
   var positions = [-1, 1, 1, 1, 1, -1, 1, -1, -1, -1, -1, 1];
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
-
   gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
   gl.clearColor(0, 0, 0, 0);
   gl.clear(gl.COLOR_BUFFER_BIT);
   gl.useProgram(program);
   gl.enableVertexAttribArray(positionAttributeLocation);
   gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-
   var size = 2;
   var type = gl.FLOAT;
   var normalize = false;
@@ -62,13 +56,10 @@
     stride,
     offset,
   );
-
   var primitiveType = gl.TRIANGLES;
   var offset = 0;
   var count = 6;
-
   var offsetLoc = gl.getUniformLocation(program, 'xy');
   gl.uniform2fv(offsetLoc, [canvas.width, canvas.height]);
-
   gl.drawArrays(primitiveType, offset, count);
 })();
