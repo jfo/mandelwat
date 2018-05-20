@@ -5,7 +5,12 @@
     alert("This browser doesn't seem to support webGL. sorry :(");
     return;
   }
-  var vertexShaderSource = document.getElementById('vertex-shader').text;
+  var vertexShaderSource = `\
+attribute vec2 a_position;
+void main() {
+  gl_Position = vec4(a_position, 0, 1);
+}
+`;
   var vertexShader = gl.createShader(gl.VERTEX_SHADER);
   gl.shaderSource(vertexShader, vertexShaderSource);
   gl.compileShader(vertexShader);
@@ -14,7 +19,12 @@
     console.log(gl.getShaderInfoLog(shader));
     gl.deleteShader(shader);
   }
-  var fragmentShaderSource = document.getElementById('fragment-shader').text;
+  var fragmentShaderSource = `\
+precision mediump float;
+void main() {
+  gl_FragColor = vec4( 1.0, 0.0, 0.0, 1.0 );
+}
+`;
   var fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
   gl.shaderSource(fragmentShader, fragmentShaderSource);
   gl.compileShader(fragmentShader);
@@ -59,7 +69,5 @@
   var primitiveType = gl.TRIANGLES;
   var offset = 0;
   var count = 6;
-  var offsetLoc = gl.getUniformLocation(program, 'xy');
-  gl.uniform2fv(offsetLoc, [canvas.width, canvas.height]);
   gl.drawArrays(primitiveType, offset, count);
 })();

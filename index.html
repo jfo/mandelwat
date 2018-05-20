@@ -1,41 +1,9 @@
 <!DOCTYPE html>
 
 <html>
-    <head></head>
-    <body style="text-align: center;">
-        <canvas height=500 width=500 id='mandelwat'></canvas>
-
-        <script id="vertex-shader" type="notjs">
-            attribute vec2 a_position;
-            void main() {
-                gl_Position = vec4(a_position, 0, 1);
-            }
-        </script>
-
-        <script id="fragment-shader" type="x-shader/x-fragment">// <![CDATA[
-            precision mediump float;
-            uniform vec2 xy;
-
-            void main() {
-                vec3 col = vec3(0.0);
-                vec2 p = -(xy - 2.0 * gl_FragCoord.xy) / xy.y * 2.0 + vec2(0.0);
-                float l = 1.0;
-                vec2 z  = vec2(0.0);
-                vec2 c = vec2(p.x, p.y);
-                for(int i = 0; i < 100000; i++ ) {
-                    z = vec2( z.x*z.x - z.y*z.y, 2.0*z.x*z.y ) + c;
-
-                    if(dot(z,z) > (4.0)) {
-                        col += 0.5 + 0.5 * cos(l * 0.3 + vec3(1.0, 2.0 , 5.0));
-                        break;
-                    }
-                    if( i > 50 ) { break; }
-                    l += 1.0;
-                }
-
-                gl_FragColor = vec4( col, 1.0 );
-            }
-        </script>
-        <script src='./mandelgl.js'></script>
-    </body>
+  <head></head>
+  <body style="text-align: center;">
+    <canvas height=500 width=500 id='mandelwat'></canvas>
+    <script src='./mandelgl.js'></script>
+  </body>
 </html>
